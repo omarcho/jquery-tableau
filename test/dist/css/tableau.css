@@ -1,0 +1,92 @@
+.tableau-tile:active {
+  outline: 0;
+}
+.tableau-tile {
+  width: 150px;
+  height: 150px;
+  display: block;
+  float: left;
+  margin: 5px;
+  background-color: #eeeeee;
+  box-shadow: inset 0 0 1px #FFFFCC;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+.tableau-tile:hover {
+  outline: #999999 solid 3px;
+}
+.tableau-tile:active {
+  outline: 0;
+}
+.tableau-tile.no-outline {
+  outline-color: transparent;
+}
+.tableau-tile.small-tile {
+  width: 70px;
+  height: 70px;
+}
+.tableau-tile.wide-tile {
+  width: 310px;
+  height: 150px;
+}
+.tableau-tile.wide-tile-v {
+  height: 310px;
+  width: 150px;
+}
+.tableau-tile.large-tile {
+  width: 310px;
+  height: 310px;
+}
+.tableau-tile.big-tile {
+  width: 470px;
+  height: 470px;
+}
+.tableau-tile.super-tile {
+  width: 630px;
+  height: 630px;
+}
+
+.metro .tableau-tile {
+    border-radius: 10px;
+    box-shadow: 5px 5px rgba(0, 0, 0, 0.2);
+}
+.metro .tableau-tile {
+    opacity: 1;
+    -webkit-transition: all 0.35s ease;
+    -moz-transition: all 0.35s ease;
+    -o-transition: all 0.35s ease;
+    transition: all 0.35s ease;
+    box-shadow: 7px 7px rgba(0, 0, 0, 0.2);
+}
+.metro .tableau-tile {
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+}
+
+.metro .tableau-tile {
+    font-family: 'Segoe UI_','Open Sans',Verdana,Arial,Helvetica,sans-serif;
+}
+.metro .tableau-tile {
+    width: 120px;
+    height: 120px;
+    margin: 0 10px 10px 0;
+}
+.metro .tableau-tile {
+    position: relative;
+    overflow: hidden;
+    display: block;
+    float: left;
+    margin: 0 10px 10px 0;
+    padding: 0;
+    cursor: pointer;
+    background-color: #eee;
+    box-shadow: inset 0 0 1px #ffc;
+}
