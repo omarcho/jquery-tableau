@@ -32,21 +32,21 @@
             this.api.select(sel);
 
         },
-        filter: function (sel) {
-            this.api.filter(sel);
+        filter: function (sel, wsNames) {
+            this.api.filter(sel, wsNames);
 
         },
 
-        getFilters: function () {
-            return this.api.getFilters();
+        getFilters: function (wsNames) {
+            return this.api.getFilters(wsNames);
 
         },
         parameter: function (sel) {
             this.api.parameter(sel);
 
         },
-        getParameters: function () {
-            return this.api.getParameters();
+        getParameters: function (wsNames) {
+            return this.api.getParameters(wsNames);
 
         },
         refresh: function () {
@@ -58,6 +58,9 @@
         },
 		reload: function (){
 			this.api.reload();
+		},
+		getActiveWorksheets: function (){
+			return this.api.getActiveWorksheets();
 		},
         destroy: function () {
 

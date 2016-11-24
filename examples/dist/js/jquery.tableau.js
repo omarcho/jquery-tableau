@@ -29,7 +29,29 @@
         self.selectedFilters = null;
         self.initialized = false;
 
-
+		var getWorksheets = function (wslist, names){
+			if(!names){
+				return wslist;
+			}
+			var ret = [];
+			names = typeof(names) == "string" ? [names] : names;
+			var wsNames = $.map(names, function(name, i){
+				return name.toString().toLowerCase()
+			});
+			$.each(wslist, function (i, ws){
+				
+				if(wsNames.indexOf(ws.getName().toLowerCase()) != -1 ){
+					ret.push(ws);
+				}
+			}
+			);
+			return ret;
+		};
+		var getActiveWorksheets = function (){
+			var active = self.Viz.getWorkbook().getActiveSheet();
+			var ret = active.getWorksheets != null ? active.getWorksheets() : [active];
+			return ret;
+		};
         var enqueuedCallbacks = [];
         var enqueueActions = function (callback, arguments, owner) {
             enqueuedCallbacks.push({ callback: callback, arguments: arguments, owner: owner });
@@ -71,10 +93,7 @@
 			var ws = marks.getWorksheet();
 			ws.getSelectedMarksAsync().then(
 				function (marks) {
-					if(marks.length > 0){
-						onSelectMarks.apply(self, [marks, this.getName()]);
-					}
-					
+					onSelectMarks.apply(self, [marks, this.getName()]);
 				}.bind(ws)
 			).otherwise(
 				function (error) {
@@ -130,22 +149,20 @@
             }
         };
 
-        var getFilters = function () {
+        var getFilters = function (wsNames) {
             if (!self.initialized) {
                 enqueueActions(getFilters, arguments);
                 return;
             }
-
-            var active = self.Viz.getWorkbook().getActiveSheet();
+            // var active = self.Viz.getWorkbook().getActiveSheet();
             // TODO: ¿Como me determino mejor que la hoja activa es un dashboard?
-            var worksheets = active.getWorksheets != null ? active.getWorksheets() : [active];
+            var worksheets = getWorksheets(getActiveWorksheets(), wsNames);
             for (var i = 0; i < worksheets.length; i++) {
                 var ws = worksheets[i];
                 ws.getFiltersAsync().then(
                         function (filters) {
-							if(filters.length > 0){
-								callback(onFilters, self, [filters, this.getName()]);
-							}
+							callback(onFilters, self, [filters, this.getName()]);
+							
                         }.bind(ws)
                     ).otherwise(
                         function (error) {
@@ -203,18 +220,11 @@
         var pauseRefreshInterval = function () {
             self.pauseInterval = true;
         };
-        //applyFilterAsync( 
-        //    fieldName: string, 
-        //values: object[] or object, 
-        //updateType: FilterUpdateType, 
-        //options?: FilterOptions)
-
-        var filter = function (data) {
+        var filter = function (data, wsNames) {
 
             if (!self.initialized) { return false; }
-            var active = self.Viz.getWorkbook().getActiveSheet();
-            // TODO: ¿Como me determino mejor que la hoja activa es un dashboard?
-            var worksheets = active.getWorksheets != null ? active.getWorksheets() : [active];
+ 
+            var worksheets = getWorksheets(getActiveWorksheets(), wsNames);
             for (var i = 0; i < worksheets.length; i++) {
                 var ws = worksheets[i];
                 for (var j = 0; j < data.length; j++) {
@@ -230,12 +240,10 @@
 
             }
         };
-        var select = function (data) {
+        var select = function (data, wsNames) {
 
             if (!self.initialized) { return false; }
-            var active = self.Viz.getWorkbook().getActiveSheet();
-            // TODO: ¿Como me determino mejor que la hoja activa es un dashboard?
-            var worksheets = active.getWorksheets != null ? active.getWorksheets() : [active];
+            var worksheets = getWorksheets(getActiveWorksheets(), wsNames);
             for (var i = 0; i < worksheets.length; i++) {
                 var ws = worksheets[i];
                 for (var j = 0; j < data.length; j++) {
@@ -248,29 +256,40 @@
             }
         };
 		
+		
+		// Public 
 		self.setOptions = function (opts){
 			self.options = $.extend(self.options, opts);
 		};
         self.pauseRefreshInterval = pauseRefreshInterval;
         self.refresh = refresh;
+		self.getActiveWorksheets = function (){
+			return $.map(getActiveWorksheets(), function (ws, i){
+				return ws.getName();
+			});
+		};
         self.select = function (data) {
             self.marks = data;
             if (self.initialized) {
-                select.apply(self, [data]);
+                select.apply(self, arguments);
+            } else {
+                enqueueActions(select, arguments);
             }
 
         };
         self.filter = function (data) {
             self.filters = data;
             if (self.initialized) {
-                filter.apply(self, [data]);
+                filter.apply(self, arguments);
+            } else {
+                enqueueActions(filter, arguments);
             }
 
         };
         self.parameter = function (data) {
             self.parameters = data;
             if (self.initialized) {
-                parameter.apply(self, [data]);
+                parameter.apply(self, arguments);
             } else {
                 enqueueActions(parameter, arguments);
             }
@@ -310,7 +329,6 @@
 		}
 
     };
-
 	return TableauManager;
 }));
 (function (factory) {
@@ -347,21 +365,21 @@
             this.api.select(sel);
 
         },
-        filter: function (sel) {
-            this.api.filter(sel);
+        filter: function (sel, wsNames) {
+            this.api.filter(sel, wsNames);
 
         },
 
-        getFilters: function () {
-            return this.api.getFilters();
+        getFilters: function (wsNames) {
+            return this.api.getFilters(wsNames);
 
         },
         parameter: function (sel) {
             this.api.parameter(sel);
 
         },
-        getParameters: function () {
-            return this.api.getParameters();
+        getParameters: function (wsNames) {
+            return this.api.getParameters(wsNames);
 
         },
         refresh: function () {
@@ -373,6 +391,9 @@
         },
 		reload: function (){
 			this.api.reload();
+		},
+		getActiveWorksheets: function (){
+			return this.api.getActiveWorksheets();
 		},
         destroy: function () {
 

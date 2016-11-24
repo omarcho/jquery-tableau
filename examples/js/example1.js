@@ -20,23 +20,43 @@ requirejs(["tableau-module"], function (){
 			});
 		};
 		
-		var fillFilter = function (filters, selector){
+		var fillFilter = function (filters, selector, wsName){
 			$filters= $(selector);
-			$filters.empty();
+			$filters.append("<h3>" + wsName + "</h3>");
+			
+			var $ws = $("#worksheets");
+			//$filters.empty();
 			var ret = [];
 			$.each(filters, function(i, filter){
+				if(filter.getFilterType()!= "categorical"){
+					return;
+				}
 				var $select = $("<select>")
 					.attr("id",filter.getFieldName())
 					.addClass("form-control");
 				$select.data(filter);
 				ret.push($select);
-				var $group = $("<div class='form-group'>")
+				var $group = $("<div class='input-group'>")
 				$filters.append($group);
 				$group
-					.append("<label for='"+filter.getFieldName()+"'>" + filter.getFieldName() + "</label>")			
+					.append("<span class='input-group-addon'>" + filter.getFieldName() + "</span>")			
 					.append($select);
+					
+				$but = $("<button type='button' class='btn btn-primary'>Go</button>")
+					.data($select)
+					.on("click", function(evt){
+						var item = $(evt.target);
+						$("#tableau-report")
+							.tableau("filter", 
+								[{fieldName: item.data().data().getFieldName(), value:item.data().val()}],
+								$ws.val()
+								);
+					});
+				;
+				$group.append($("<span class='input-group-btn'>").append($but));
 				$.each(filter.getAppliedValues().concat([{value:"",formattedValue:"[All]"}]), function(i, item){
 					$opt = $("<option>").attr("value", item.value);
+					if(item.value==""){$opt.attr("selected", "true")};
 					$opt.html(item.formattedValue);
 					$select.append($opt);
 				});
@@ -46,8 +66,8 @@ requirejs(["tableau-module"], function (){
 		};
 		
 		var selects = [];
-		var $turlgasprice = $("#turl-gasprice");
-		var $gasprice = $("#tableau-gasprice").tableau({
+		var $turlgasprice = $("#turl-report");
+		var $gasprice = $("#tableau-report").tableau({
 			
 			url:$turlgasprice.val(),
 			getSelectedMarksEnabled:true,
@@ -60,7 +80,7 @@ requirejs(["tableau-module"], function (){
 		})
 			.on("jquery.tableau.markschange", function (evt, marks, wsName){
 				
-				showMarks(marks, "#marks-gasprice");
+				showMarks(marks, "#marks-report");
 				console.log("Worsheet: " + wsName);
 				
 				
@@ -69,47 +89,40 @@ requirejs(["tableau-module"], function (){
 				
 				
 				console.log("Filters: " + wsName);
-				selects = fillFilter(filters, "#filter-gasprice");
+				
+				selects = selects.concat(fillFilter(filters, "#filter-report", wsName));
 				
 				
 			})
 			.on("jquery.tableau.loadcomplete", function (){
-				// Once report is loaded we setup the buttons.
-				$("#get-filter-gasprice").on("click", function(){
-					$gasprice.tableau("setOptions", {"getFiltersEnabled": true} );
-					$gasprice.tableau("getFilters");
-					$gasprice.tableau("setOptions", {"getFiltersEnabled": false} );
-				});
+				var $ws = $("#worksheets");
 				
-				$("#filterby-gasprice").on("click", function(){
-					$.each(selects, function (i, item){
-						$gasprice.tableau("filter", [{fieldName: item.data().getFieldName(), value:item.val()}]);
-					});
-					
-				});
-				$("#reload-gasprice").on("click", function(){
-						
-					$gasprice.tableau("setOptions", {url:$turlgasprice.val()});
-					$gasprice.tableau("reload");
-				});
+				
+				$ws.empty();
+				$.each($gasprice.tableau("getActiveWorksheets"), function (i, item){
+					$ws.append("<option>"+item+"</option>");
+				}
+				);
 			})
 			;
-		
-		
-		
-		// $("#tableau-bubbles").tableau({
+			// Once report is loaded we setup the buttons.
+				
 			
-			// url:"https://public.tableau.com/views/ConsumerSpending_2/ConsumerSpendingBubbles?:embed=y&:display_count=yes",
-			// getSelectedMarksEnabled:true,
-			// selectMarksCallback:function(marks){
-				// showMarks(marks, "#marks-bubbles");
-			// },
-			// params:{
-				// width:"100%",
-				// height: "450px",
-				// hideTabs: true,
-			// }
-		// });
+			var $ws = $("#worksheets");
+			$("#get-filter-report").on("click", function(){
+				$("#filter-report").empty();
+				selects = [];
+				$gasprice.tableau("setOptions", {"getFiltersEnabled": true} );
+				$gasprice.tableau("getFilters", $ws.val());
+				$gasprice.tableau("setOptions", {"getFiltersEnabled": false} );
+			});
+			
+			
+			$("#reload-report").on("click", function(){
+					
+				$gasprice.tableau("setOptions", {url:$turlgasprice.val()});
+				$gasprice.tableau("reload");
+			});
 		
 	} );
 });

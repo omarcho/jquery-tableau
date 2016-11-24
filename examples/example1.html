@@ -22,55 +22,61 @@
 				<p></p>
         </div>
     </div>
-	 <div class="row">
-		<div class="col-lg-12">
-			<div class="row">
-				<div class="col-lg-3"> 
-					<button id="get-filter-gasprice" type="button" class="btn btn-default">
-					Get Filters
-					</button>
-				</div>
-				
-				<div id="filter-gasprice" class="col-lg-6">
-				
-				</div>
-				<div id="filter-gasprice" class="col-lg-3">
-					<button id="filterby-gasprice" type="button" class="btn btn-primary">
-					Filter
-					</button>
-				</div>
-			</div>
-        </div>
-    </div>
 	<div class="row">
-		<div class="col-lg-12">
-			<div class="row">
-				<div class="col-lg-9">
-					<div class="form-group">
-					  <label for="turl">URL</label>
-					  <input type="text" id="turl-gasprice" class="form-control" placeholder="URL" 
-						value="https://public.tableau.com/views/GasPrice_4/GasPricesbyRegion?:embed=y&:display_count=yes"
-					  />
+			<form class="form-horizontal">
+				<div class="form-group">
+					<label class="col-lg-1 control-label" for="turl">URL</label>
+					<div class="col-lg-10">
+						  <input type="text" id="turl-report" class="form-control" placeholder="URL" 
+							value="https://public.tableau.com/views/GasPrice_4/GasPricesbyRegion?:embed=y&:display_count=yes"
+						  />
+					</div>
+					<div class="col-lg-1">
+						<button id="reload-report" type="button" class="btn btn-success">
+						Reload
+						</button>
 					</div>
 				</div>
-				<div id="filter-gasprice" class="col-lg-3">
-					<button id="reload-gasprice" type="button" class="btn btn-success">
-					Reload
-					</button>
+				
+			</form>
+
+	</div>
+	 <div class="row">
+		<div class="col-lg-3">
+			
+			<div class="row">
+				<div class="col-lg-12"> 
+				
+					<div class="input-group">
+					  <span class='input-group-addon'>Worksheet</span>
+					  <select id="worksheets" class="form-control" ></select>
+					  <span class="input-group-btn">
+						<button id="get-filter-report" type="button" class="btn btn-default">
+						Go
+						</button>
+					  </span>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div id="filter-report" class="col-lg-12" style="display:overflow">
+						
+				</div>
+			</div>
+			<div class="row">
+				<div id="marks-report" class="col-lg-12" style="display:overflow">
+						
 				</div>
 			</div>
         </div>
+		<div  class="col-lg-9">
+			<div id="tableau-report"></div>
+			
+		</div>
     </div>
-    <div class="row">
-		<div class="col-lg-12">
-			<div id="tableau-gasprice"></div>
-				
-        </div>
-    </div>
-	<div class="row">
-		<div id="marks-gasprice" class="col-lg-12">
-        </div>
-    </div>
+
+    
 </div>
 </body>
 
