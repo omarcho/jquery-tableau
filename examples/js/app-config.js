@@ -8,7 +8,7 @@ requirejs.config({
         "bootstrap": "libs/js/bootstrap",
 		"knockout": "libs/js/knockout-3.3.0",
 		"tableau": "libs/js/tableau-2.1.1",
-		"tableau-module":"dist/js/jquery.tableau"
+		"jquery.tableau":"dist/js/jquery.tableau"
     },
     shim: {
         

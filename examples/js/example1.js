@@ -1,4 +1,4 @@
-requirejs(["tableau-module"], function (){
+//requirejs(["tableau-module"], function (){
 	requirejs(['jquery', 'jquery.tableau'], function ($) {
 		var showMarks = function (marks, selector){
 			$marks = $(selector);
@@ -125,7 +125,7 @@ requirejs(["tableau-module"], function (){
 			});
 		
 	} );
-});
+//});
 
 
 

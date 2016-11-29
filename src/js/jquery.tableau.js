@@ -62,6 +62,9 @@
 		getActiveWorksheets: function (){
 			return this.api.getActiveWorksheets();
 		},
+		activateSheet: function (sheetNameOrIndex) {
+            this.api.activateSheet(sheetNameOrIndex);
+        },
         destroy: function () {
 
         }

@@ -256,6 +256,19 @@
             }
         };
 		
+		var activateSheet = function (sheetNameOrIndex) {
+            if (!self.initialized) {
+                return false;
+            }
+            var wb = self.Viz.getWorkbook();
+            wb.activateSheetAsync(sheetNameOrIndex)
+                .then(function (workbook) {
+                    $(self.element).trigger("jquery.tableau.activatesheet", [workbook.getName()]);
+                })
+                .otherwise(function (error) {
+                    onError(error);
+                });
+        };
 		
 		// Public 
 		self.setOptions = function (opts){
@@ -296,6 +309,14 @@
         };
         self.getParameters = getParameters;
         self.getFilters = getFilters;
+		
+		self.activateSheet = function (sheetNameOrIndex) {
+            if (self.initialized) {
+                activateSheet.apply(self, arguments);
+            } else {
+                activateSheet(parameter, arguments);
+            }
+        };
         self.init = function () {
 
             var self = this;
@@ -395,6 +416,9 @@
 		getActiveWorksheets: function (){
 			return this.api.getActiveWorksheets();
 		},
+		activateSheet: function (sheetNameOrIndex) {
+            this.api.activateSheet(sheetNameOrIndex);
+        },
         destroy: function () {
 
         }
